@@ -93,7 +93,19 @@ void afanasev::linkCmd(std::istream & in, std::ostream & out, note_t & db)
 }
 
 void afanasev::haltCmd(std::istream & in, std::ostream & out, note_t & db)
-{}
+{
+	std::string name, link;
+	in >> name >> link;
+
+	try
+	{
+		db.at(name)->ptr_.erase(link);
+	}
+	catch(const std::out_of_range &)
+	{
+		throw std::logic_error("Not have link on this note");
+	}
+}
 
 void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
 {
@@ -117,7 +129,39 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
 }
 
 void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
-{}
+{
+	size_t cnt = 0;
+	std::string name;
+	in >> name;
+
+	try
+	{
+		for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+		{
+			if (ptr.second.expired())
+			{
+				++cnt;
+			}
+			
+		}
+	}
+	catch(const std::out_of_range &)
+	{
+		throw std::logic_error("Not have link on this note");
+	}
+}
 
 void afanasev::refreshCmd(std::istream & in, std::ostream & out, note_t & db)
-{}
+{
+	std::string name, link;
+	in >> name >> link;
+
+	try
+	{
+		db.at(name)->ptr_.erase(link);
+	}
+	catch(const std::out_of_range &)
+	{
+		throw std::logic_error("Not have link on this note");
+	}
+}
