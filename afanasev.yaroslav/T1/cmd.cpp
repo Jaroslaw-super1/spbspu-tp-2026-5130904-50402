@@ -35,7 +35,7 @@ void afanasev::lineCmd(std::istream & in, std::ostream &, note_t & db)
 
   try
 	{
-    db.at(name)->text.push_back(text);
+    db.at(name)->text_.push_back(text);
   }
 	catch (const std::out_of_range &)
 	{
@@ -50,7 +50,7 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
 
 	try
 	{
-		for (const std::string & line : db.at(name)->text)
+		for (const std::string & line : db.at(name)->text_)
 		{
 			out << line << '\n';
 		}
@@ -77,9 +77,9 @@ void afanasev::linkCmd(std::istream & in, std::ostream & out, note_t & db)
 
 	try
 	{
-		if (db.at(name)->ptr.find(link) == db.at(name)->ptr.end())
+		if (db.at(name)->ptr_.find(link) == db.at(name)->ptr_.end())
 		{
-			db.at(name)->ptr[link] = db.at(link);
+			db.at(name)->ptr_[link] = db.at(link);
 		}
 		else
 		{
@@ -96,7 +96,25 @@ void afanasev::haltCmd(std::istream & in, std::ostream & out, note_t & db)
 {}
 
 void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
-{}
+{
+	std::string name;
+	in >> name;
+
+	try
+	{
+		for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+		{
+			if (!ptr.second.expired())
+			{
+				out << ptr.first << '\n';
+			}
+		}
+	}
+	catch(const std::out_of_range &)
+	{
+		throw std::logic_error("not have this name");
+	}
+}
 
 void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
 {}

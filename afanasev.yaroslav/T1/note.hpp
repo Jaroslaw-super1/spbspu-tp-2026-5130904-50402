@@ -13,8 +13,8 @@ namespace afanasev
   class Note
   {
   public:
-    std::vector< std::string > text;
-    std::unordered_map< std::string, std::weak_ptr< Note > > ptr;
+    std::vector< std::string > text_;
+    std::unordered_map< std::string, std::weak_ptr< Note > > ptr_;
   };
 }
 
