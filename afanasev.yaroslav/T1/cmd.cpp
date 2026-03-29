@@ -71,7 +71,26 @@ void afanasev::dropCmd(std::istream & in, std::ostream &, note_t & db)
 
 
 void afanasev::linkCmd(std::istream & in, std::ostream & out, note_t & db)
-{}
+{
+	std::string name, link;
+	in >> name >> link;
+
+	try
+	{
+		if (db.at(name)->ptr.find(link) == db.at(name)->ptr.end())
+		{
+			db.at(name)->ptr[link] = db.at(link);
+		}
+		else
+		{
+			throw std::logic_error("This link already exists");
+		}
+	}
+	catch(const std::out_of_range &)
+	{
+		throw std::logic_error("error linking");
+	}
+}
 
 void afanasev::haltCmd(std::istream & in, std::ostream & out, note_t & db)
 {}
