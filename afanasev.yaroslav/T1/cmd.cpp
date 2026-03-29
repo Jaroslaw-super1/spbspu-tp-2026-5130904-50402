@@ -25,14 +25,14 @@ void afanasev::lineCmd(std::istream & in, std::ostream &, note_t & db)
 
 	in >> std::quoted(text);
 
-  try
+	try
 	{
-    db.at(name)->text_.push_back(text);
-  }
+		db.at(name)->text_.push_back(text);
+	}
 	catch (const std::out_of_range &)
 	{
-    throw std::logic_error("not have note with this name");
-  }
+		throw std::logic_error("not have note with this name");
+	}
 }
 
 void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
@@ -60,7 +60,6 @@ void afanasev::dropCmd(std::istream & in, std::ostream &, note_t & db)
 
 	db.erase(name);
 }
-
 
 void afanasev::linkCmd(std::istream & in, std::ostream & out, note_t & db)
 {
@@ -134,7 +133,6 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
 			{
 				++cnt;
 			}
-			
 		}
 	}
 	catch(const std::out_of_range &)
