@@ -1,14 +1,8 @@
 #include <iostream>
+#include <string>
 #include <unordered_map>
 #include "cmd.hpp"
 #include "note.hpp"
-
-#include <iosfwd>
-#include <limits>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 int main()
 {

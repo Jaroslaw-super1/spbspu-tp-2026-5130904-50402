@@ -1,13 +1,6 @@
 #ifndef CMD_HPP
 #define CMD_HPP
 
-#include <iosfwd>
-#include <limits>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 #include "note.hpp"
 
 namespace afanasev

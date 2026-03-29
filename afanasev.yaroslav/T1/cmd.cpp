@@ -1,15 +1,7 @@
 #include <iostream>
-#include <unordered_map>
+#include <iomanip>
 #include "cmd.hpp"
 #include "note.hpp"
-
-#include <iosfwd>
-#include <limits>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <iomanip>
 
 void afanasev::noteCmd(std::istream & in, std::ostream &, note_t & db)
 {

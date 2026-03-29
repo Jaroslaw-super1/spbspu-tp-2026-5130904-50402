@@ -1,7 +1,6 @@
 #ifndef NOTE_HPP
 #define NOTE_HPP
 
-#include <iosfwd>
 #include <limits>
 #include <memory>
 #include <string>
