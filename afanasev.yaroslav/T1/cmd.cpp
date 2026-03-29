@@ -153,15 +153,27 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
 
 void afanasev::refreshCmd(std::istream & in, std::ostream & out, note_t & db)
 {
-	std::string name, link;
-	in >> name >> link;
+	std::string name;
+	in >> name;
+	std::vector< std::string > forDelit;
 
 	try
 	{
-		db.at(name)->ptr_.erase(link);
+		for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+		{
+			if (ptr.second.expired())
+			{
+				forDelit.push_back(ptr.first);
+			}
+		}
 	}
 	catch(const std::out_of_range &)
 	{
-		throw std::logic_error("Not have link on this note");
+		throw std::logic_error("Not have note with this name");
+	}
+
+	for (const std::string & ptr : forDelit)
+	{
+		db.at(name)->ptr_.erase(ptr);
 	}
 }
