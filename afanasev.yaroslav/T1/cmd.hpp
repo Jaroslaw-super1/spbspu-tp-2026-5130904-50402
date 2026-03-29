@@ -18,9 +18,9 @@ namespace afanasev
   constexpr std::streamsize streamMax = std::numeric_limits< std::streamsize >::max();
 
   void noteCmd(std::istream & in, std::ostream &, note_t & db);
-  void lineCmd(std::istream & in, std::ostream & out, note_t & db);
+  void lineCmd(std::istream & in, std::ostream &, note_t & db);
   void showCmd(std::istream & in, std::ostream & out, note_t & db);
-  void dropCmd(std::istream & in, std::ostream & out, note_t & db);
+  void dropCmd(std::istream & in, std::ostream &, note_t & db);
 
   void linkCmd(std::istream & in, std::ostream & out, note_t & db);
   void haltCmd(std::istream & in, std::ostream & out, note_t & db);
