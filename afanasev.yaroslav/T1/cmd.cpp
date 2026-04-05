@@ -61,7 +61,7 @@ void afanasev::dropCmd(std::istream & in, std::ostream &, note_t & db)
   db.erase(name);
 }
 
-void afanasev::linkCmd(std::istream & in, std::ostream & out, note_t & db)
+void afanasev::linkCmd(std::istream & in, std::ostream &, note_t & db)
 {
   std::string name, link;
   in >> name >> link;
@@ -83,7 +83,7 @@ void afanasev::linkCmd(std::istream & in, std::ostream & out, note_t & db)
   }
 }
 
-void afanasev::haltCmd(std::istream & in, std::ostream & out, note_t & db)
+void afanasev::haltCmd(std::istream & in, std::ostream &, note_t & db)
 {
   std::string name, link;
   in >> name >> link;
@@ -119,7 +119,7 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
   }
 }
 
-void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
+void afanasev::expiredCmd(std::istream & in, std::ostream &, note_t & db)
 {
   size_t cnt = 0;
   std::string name;
@@ -141,7 +141,7 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
   }
 }
 
-void afanasev::refreshCmd(std::istream & in, std::ostream & out, note_t & db)
+void afanasev::refreshCmd(std::istream & in, std::ostream &, note_t & db)
 {
   std::string name;
   in >> name;
