@@ -13,7 +13,7 @@ namespace afanasev
   {
   public:
     std::vector< std::string > text_;
-    std::unordered_map< std::string, std::weak_ptr< Note > > ptr_;
+    std::vector< std::pair< std::string, std::weak_ptr< Note > > > ptr_;
   };
 }
 

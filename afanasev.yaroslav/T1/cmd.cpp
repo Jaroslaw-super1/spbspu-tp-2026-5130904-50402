@@ -14,7 +14,7 @@ void afanasev::noteCmd(std::istream & in, std::ostream &, note_t & db)
   }
   else
   {
-    throw std::logic_error("This note have");
+    throw std::out_of_range("This note have");
   }
 }
 
@@ -25,14 +25,7 @@ void afanasev::lineCmd(std::istream & in, std::ostream &, note_t & db)
 
   in >> std::quoted(text);
 
-  try
-  {
-    db.at(name)->text_.push_back(text);
-  }
-  catch (const std::out_of_range &)
-  {
-    throw std::out_of_range("not have note with this name");
-  }
+  db.at(name)->text_.push_back(text);
 }
 
 void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
@@ -40,16 +33,9 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
-  try
+  for (const std::string & line : db.at(name)->text_)
   {
-    for (const std::string & line : db.at(name)->text_)
-    {
-      out << line << '\n';
-    }
-  }
-  catch (const std::out_of_range &)
-  {
-    throw std::out_of_range("not have note with this name");
+    out << line << '\n';
   }
 }
 
@@ -71,21 +57,18 @@ void afanasev::linkCmd(std::istream & in, std::ostream &, note_t & db)
   std::string name, link;
   in >> name >> link;
 
-  try
+  std::shared_ptr< Note > src = db.at(name);
+  std::shared_ptr< Note > dst = db.at(link);
+
+  for (const std::pair< std::string, std::weak_ptr< Note > > & ptr : src->ptr_)
   {
-    if (db.at(name)->ptr_.find(link) == db.at(name)->ptr_.end())
+    if (ptr.first == link)
     {
-      db.at(name)->ptr_[link] = db.at(link);
-    }
-    else
-    {
-      throw std::logic_error("This link already exists");
+      throw std::out_of_range("This link already exists");
     }
   }
-  catch(const std::out_of_range &)
-  {
-    throw std::logic_error("error linking");
-  }
+
+  src->ptr_.push_back({link, dst});
 }
 
 void afanasev::haltCmd(std::istream & in, std::ostream &, note_t & db)
@@ -93,14 +76,20 @@ void afanasev::haltCmd(std::istream & in, std::ostream &, note_t & db)
   std::string name, link;
   in >> name >> link;
 
-  try
+  std::shared_ptr< Note > src = db.at(name);
+  std::vector< std::pair< std::string, std::weak_ptr< Note > > >::iterator it = src->ptr_.begin();
+
+  while (it != src->ptr_.end() && it->first != link)
   {
-    db.at(name)->ptr_.erase(link);
+    ++it;
   }
-  catch(const std::out_of_range &)
+
+  if (it == src->ptr_.end() || it->second.expired())
   {
-    throw std::logic_error("Not have link on this note");
+    throw std::out_of_range("Link not found or expired");
   }
+
+  src->ptr_.erase(it);
 }
 
 void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
@@ -108,19 +97,12 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
-  try
+  for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
   {
-    for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+    if (!ptr.second.expired())
     {
-      if (!ptr.second.expired())
-      {
-        out << ptr.first << '\n';
-      }
+      out << ptr.first << '\n';
     }
-  }
-  catch(const std::out_of_range &)
-  {
-    throw std::logic_error("not have this name");
   }
 }
 
@@ -130,19 +112,12 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
-  try
+  for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
   {
-    for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+    if (ptr.second.expired())
     {
-      if (ptr.second.expired())
-      {
-        ++cnt;
-      }
+      ++cnt;
     }
-  }
-  catch(const std::out_of_range &)
-  {
-    throw std::logic_error("Not have link on this note");
   }
 
   out << cnt << '\n';
@@ -152,25 +127,20 @@ void afanasev::refreshCmd(std::istream & in, std::ostream &, note_t & db)
 {
   std::string name;
   in >> name;
-  std::vector< std::string > forDelit;
 
-  try
+  std::vector< std::pair< std::string, std::weak_ptr< Note > > > & links = db.at(name)->ptr_;
+
+  std::vector< std::pair< std::string, std::weak_ptr< Note > > >::iterator it = links.begin();
+
+  while (it != links.end())
   {
-    for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+    if (it->second.expired())
     {
-      if (ptr.second.expired())
-      {
-        forDelit.push_back(ptr.first);
-      }
+      it = links.erase(it);
     }
-  }
-  catch(const std::out_of_range &)
-  {
-    throw std::out_of_range("not have note with this name");
-  }
-
-  for (const std::string & ptr : forDelit)
-  {
-    db.at(name)->ptr_.erase(ptr);
+    else
+    {
+      ++it;
+    }
   }
 }
