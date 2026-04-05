@@ -97,7 +97,7 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
-  for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+  for (const std::pair< std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
   {
     if (!ptr.second.expired())
     {
@@ -112,7 +112,7 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
-  for (const std::pair< const std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
+  for (const std::pair< std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
   {
     if (ptr.second.expired())
     {
