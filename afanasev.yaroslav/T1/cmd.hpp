@@ -18,7 +18,7 @@ namespace afanasev
   void linkCmd(std::istream & in, std::ostream &, note_t & db);
   void haltCmd(std::istream & in, std::ostream &, note_t & db);
   void mindCmd(std::istream & in, std::ostream & out, note_t & db);
-  void expiredCmd(std::istream & in, std::ostream &, note_t & db);
+  void expiredCmd(std::istream & in, std::ostream & out, note_t & db);
   void refreshCmd(std::istream & in, std::ostream &, note_t & db);
 }
 

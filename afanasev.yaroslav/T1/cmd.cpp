@@ -31,7 +31,7 @@ void afanasev::lineCmd(std::istream & in, std::ostream &, note_t & db)
   }
   catch (const std::out_of_range &)
   {
-    throw std::logic_error("not have note with this name");
+    throw std::out_of_range("not have note with this name");
   }
 }
 
@@ -49,7 +49,7 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
   }
   catch (const std::out_of_range &)
   {
-    throw std::logic_error("not have note with this name");
+    throw std::out_of_range("not have note with this name");
   }
 }
 
@@ -57,6 +57,11 @@ void afanasev::dropCmd(std::istream & in, std::ostream &, note_t & db)
 {
   std::string name;
   in >> name;
+
+  if (db.find(name) == db.end())
+  {
+    throw std::out_of_range("Note does not exist");
+  }
 
   db.erase(name);
 }
@@ -119,7 +124,7 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
   }
 }
 
-void afanasev::expiredCmd(std::istream & in, std::ostream &, note_t & db)
+void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
 {
   size_t cnt = 0;
   std::string name;
@@ -139,6 +144,8 @@ void afanasev::expiredCmd(std::istream & in, std::ostream &, note_t & db)
   {
     throw std::logic_error("Not have link on this note");
   }
+
+  out << cnt << '\n';
 }
 
 void afanasev::refreshCmd(std::istream & in, std::ostream &, note_t & db)
@@ -159,7 +166,7 @@ void afanasev::refreshCmd(std::istream & in, std::ostream &, note_t & db)
   }
   catch(const std::out_of_range &)
   {
-    throw std::logic_error("Not have note with this name");
+    throw std::out_of_range("not have note with this name");
   }
 
   for (const std::string & ptr : forDelit)
