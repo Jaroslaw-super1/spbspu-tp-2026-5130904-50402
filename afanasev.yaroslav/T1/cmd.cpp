@@ -33,9 +33,17 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
+  bool outp = false;
+
   for (const std::string & line : db.at(name)->text_)
   {
     out << line << '\n';
+    outp = true;
+  }
+
+  if (!outp)
+  {
+    out << '\n';
   }
 }
 
@@ -97,12 +105,20 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
   std::string name;
   in >> name;
 
+  bool outp = false;
+
   for (const std::pair< std::string, std::weak_ptr< Note > > & ptr : db.at(name)->ptr_)
   {
     if (!ptr.second.expired())
     {
       out << ptr.first << '\n';
+      outp = true;
     }
+  }
+
+  if (!outp)
+  {
+    out << '\n';
   }
 }
 
