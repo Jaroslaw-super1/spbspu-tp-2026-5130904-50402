@@ -126,7 +126,21 @@ std::ostream & afanasev::operator<<(std::ostream & out, const DataStruct & str)
   return out;
 }
 
-bool afanasev::operator<(const DataStruct & lhs, const DataStruct & rhs);
+bool afanasev::operator<(const DataStruct & lhs, const DataStruct & rhs)
+{
+  if (lhs.key1 != rhs.key1)
+  {
+    return lhs.key1 < rhs.key1;
+  }
+
+  long double lval = static_cast< long double >(lhs.key2.first) / lhs.key2.second;
+  long double rval = static_cast< long double >(rhs.key2.first) / rhs.key2.second;
+  if (lval != rval)
+  {
+    return lval < rval;
+  }
+  return lhs.key3.size() < rhs.key3.size();
+}
 
 std::istream & afanasev::operator>>(std::istream & in, CharExpect && str);
 std::istream & afanasev::operator>>(std::istream & in, StringMatch && str);
