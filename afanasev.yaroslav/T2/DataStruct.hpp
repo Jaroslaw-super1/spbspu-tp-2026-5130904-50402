@@ -180,12 +180,77 @@ std::istream & afanasev::operator>>(std::istream & in, StringMatch && str)
 
 std::istream & afanasev::operator>>(std::istream & in, ULLIn && str)
 {
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
 
+  std::string c;
+  in >> c;
+  if (!in)
+  {
+    return in;
+  }
+
+  if (c.size() < 3)
+  {
+    in.setstate(std::ios::failbit);
+    return in;
+  }
+
+  std::string suffix = c.substr(c.size() - 3);
+  for (char & ch : suffix)
+  {
+    ch = std::tolower(static_cast< unsigned char >(ch));
+  }
+  if (suffix != "ull")
+  {
+    in.setstate(std::ios::failbit);
+    return in;
+  }
+  std::string numPart = c.substr(0, c.size() - 3);
+  if (numPart.empty())
+  {
+    in.setstate(std::ios::failbit);
+    return in;
+  }
+  for (char c : numPart)
+  {
+    if (!std::isdigit(static_cast< unsigned char >(c)))
+    {
+      in.setstate(std::ios::failbit);
+      return in;
+    }
+  }
+  str.num = std::stoull(numPart);
+  return in;
 }
 
 std::istream & afanasev::operator>>(std::istream & in, RacionalNum && str)
 {
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
 
+  long long numer = 0;
+  unsigned long long denom = 1;
+  in >> CharExpect{'('}
+    >> CharExpect{':'} >> CharExpect{'N'} >> CharExpect{' '} >> numer
+    >> CharExpect{':'} >> CharExpect{'D'} >> CharExpect{' '} >> denom
+    >> CharExpect{':'} >> CharExpect{')'};
+  if (in && denom)
+  {
+    str.num = {numer, denom};
+  }
+  else
+  {
+    in.setstate(std::ios::failbit);
+  }
+
+  return in;
 }
 
 std::istream & afanasev::operator>>(std::istream & in, Kavichki && str)
