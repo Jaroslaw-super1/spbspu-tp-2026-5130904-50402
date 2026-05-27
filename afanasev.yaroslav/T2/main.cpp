@@ -2,6 +2,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include "DataStruct.hpp"
 #include "type.hpp"
 
 // ull lit
@@ -12,7 +13,7 @@
 
 int main()
 {
-  using T = int;
+  using T = afanasev::DataStruct;
 
   std::vector< T > data;
 
