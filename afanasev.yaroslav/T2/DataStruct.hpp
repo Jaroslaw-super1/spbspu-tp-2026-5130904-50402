@@ -142,10 +142,62 @@ bool afanasev::operator<(const DataStruct & lhs, const DataStruct & rhs)
   return lhs.key3.size() < rhs.key3.size();
 }
 
-std::istream & afanasev::operator>>(std::istream & in, CharExpect && str);
-std::istream & afanasev::operator>>(std::istream & in, StringMatch && str);
-std::istream & afanasev::operator>>(std::istream & in, ULLIn && str);
-std::istream & afanasev::operator>>(std::istream & in, RacionalNum && str);
-std::istream & afanasev::operator>>(std::istream & in, Kavichki && str);
+std::istream & afanasev::operator>>(std::istream & in, CharExpect && str)
+{
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
+
+  char c = 0;
+  in >> c;
+  if (in && c != str.exp)
+  {
+    in.setstate(std::ios::failbit);
+  }
+
+  return in;
+}
+
+std::istream & afanasev::operator>>(std::istream & in, StringMatch && str)
+{
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
+
+  std::string c;
+  in >> c;
+  if (in && c != str.exp)
+  {
+    in.setstate(std::ios::failbit);
+  }
+
+  return in;
+}
+
+std::istream & afanasev::operator>>(std::istream & in, ULLIn && str)
+{
+
+}
+
+std::istream & afanasev::operator>>(std::istream & in, RacionalNum && str)
+{
+
+}
+
+std::istream & afanasev::operator>>(std::istream & in, Kavichki && str)
+{
+  std::istream::sentry s(in);
+  if (!s)
+  {
+    return in;
+  }
+
+  return in >> std::quoted(str.str);
+}
+
 
 #endif
