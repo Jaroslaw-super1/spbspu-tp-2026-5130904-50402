@@ -31,9 +31,16 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
   in >> name;
 
   std::shared_ptr< Note > note = db.at(name);
-  for (const std::string & line : note->text)
+  if (note->text.empty())
   {
-    out << line << '\n';
+    out << '\n';
+  }
+  else
+  {
+    for (const std::string & line : note->text)
+    {
+      out << line << '\n';
+    }
   }
 }
 
