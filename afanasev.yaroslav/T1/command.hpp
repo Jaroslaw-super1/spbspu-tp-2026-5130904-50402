@@ -1,5 +1,5 @@
-#ifndef CMD_HPP
-#define CMD_HPP
+#ifndef COMMAND_HPP
+#define COMMAND_HPP
 
 #include "note.hpp"
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include "cmd.hpp"
+#include "command.hpp"
 #include "note.hpp"
 
 int main()
@@ -30,14 +30,10 @@ int main()
     {
       cmds.at(cmd)(std::cin, std::cout, db);
     }
-    catch (const std::out_of_range &)
+    catch (...)
     {
       std::cout << "<INVALID COMMAND>" << '\n';
       std::cin.ignore(afanasev::streamMax, '\n');
-    }
-    catch (const std::logic_error & e)
-    {
-      std::cout << e.what() << '\n';
     }
   }
 
