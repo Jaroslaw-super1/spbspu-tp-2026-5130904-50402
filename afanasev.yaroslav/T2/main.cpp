@@ -2,17 +2,13 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <limits>
+#include <string>
 #include "DataStruct.hpp"
-#include "type.hpp"
-
-// ull lit
-// rat lsp
-
-// perms
-// rects
 
 int main()
 {
+  constexpr std::streamsize streamMax = std::numeric_limits< std::streamsize >::max();
   using T = afanasev::DataStruct;
 
   std::vector< T > data;
@@ -25,7 +21,7 @@ int main()
     if (std::cin.fail())
     {
       std::cin.clear(std::cin.rdstate() & ~std::ios::failbit);
-      std::cin.ignore(afanasev::streamMax, '\n');
+      std::cin.ignore(streamMax, '\n');
     }
   }
 

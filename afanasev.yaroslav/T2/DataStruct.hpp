@@ -4,6 +4,8 @@
 #include <string>
 #include <iomanip>
 #include <iostream>
+#include <cctype>
+#include <utility>
 
 namespace afanasev
 {
@@ -66,9 +68,22 @@ std::istream & afanasev::operator>>(std::istream & in, DataStruct & str)
   in >> CharExpect{'('};
   while (in && (!gotKey1 || !gotKey2 || !gotKey3))
   {
-    std::string label;
-    in >> label;
-    if (label == ":key1" && !gotKey1)
+    char colon;
+    in >> colon;
+    if (!in || colon != ':')
+    {
+      in.setstate(std::ios::failbit);
+      break;
+    }
+    std::string key;
+    in >> key;
+    if (!in)
+    {
+      break;
+    }
+    in >> std::ws;
+
+    if (key == "key1" && !gotKey1)
     {
       in >> ULLIn{tmp.key1};
       if (in)
@@ -76,7 +91,7 @@ std::istream & afanasev::operator>>(std::istream & in, DataStruct & str)
         gotKey1 = true;
       }
     }
-    else if (label == ":key2" && !gotKey2)
+    else if (key == "key2" && !gotKey2)
     {
       in >> RacionalNum{tmp.key2};
       if (in)
@@ -84,7 +99,7 @@ std::istream & afanasev::operator>>(std::istream & in, DataStruct & str)
         gotKey2 = true;
       }
     }
-    else if (label == ":key3" && !gotKey3)
+    else if (key == "key3" && !gotKey3)
     {
       in >> Kavichki{tmp.key3};
       if (in)
@@ -186,44 +201,32 @@ std::istream & afanasev::operator>>(std::istream & in, ULLIn && str)
     return in;
   }
 
-  std::string c;
-  in >> c;
-  if (!in)
+  unsigned long long val;
+  if (!(in >> val))
   {
     return in;
   }
 
-  if (c.size() < 3)
+  char u, l1, l2;
+  if (!(in >> u >> l1 >> l2))
   {
     in.setstate(std::ios::failbit);
     return in;
   }
 
-  std::string suffix = c.substr(c.size() - 3);
-  for (char & ch : suffix)
+  u = static_cast< char >(std::tolower(static_cast< unsigned char >(u)));
+  l1 = static_cast< char >(std::tolower(static_cast< unsigned char >(l1)));
+  l2 = static_cast< char >(std::tolower(static_cast< unsigned char >(l2)));
+
+  if (u == 'u' && l1 == 'l' && l2 == 'l')
   {
-    ch = std::tolower(static_cast< unsigned char >(ch));
+    str.num = val;
   }
-  if (suffix != "ull")
-  {
-    in.setstate(std::ios::failbit);
-    return in;
-  }
-  std::string numPart = c.substr(0, c.size() - 3);
-  if (numPart.empty())
+  else
   {
     in.setstate(std::ios::failbit);
-    return in;
   }
-  for (char c : numPart)
-  {
-    if (!std::isdigit(static_cast< unsigned char >(c)))
-    {
-      in.setstate(std::ios::failbit);
-      return in;
-    }
-  }
-  str.num = std::stoull(numPart);
+
   return in;
 }
 
@@ -237,11 +240,13 @@ std::istream & afanasev::operator>>(std::istream & in, RacionalNum && str)
 
   long long numer = 0;
   unsigned long long denom = 1;
-  in >> CharExpect{'('}
-    >> CharExpect{':'} >> CharExpect{'N'} >> CharExpect{' '} >> numer
-    >> CharExpect{':'} >> CharExpect{'D'} >> CharExpect{' '} >> denom
-    >> CharExpect{':'} >> CharExpect{')'};
-  if (in && denom)
+  in >> CharExpect{'('} >> CharExpect{':'} >> CharExpect{'N'};
+  in >> std::ws >> numer;
+  in >> CharExpect{':'} >> CharExpect{'D'};
+  in >> std::ws >> denom;
+  in >> CharExpect{':'} >> CharExpect{')'};
+
+  if (in && denom != 0)
   {
     str.num = {numer, denom};
   }
@@ -263,6 +268,5 @@ std::istream & afanasev::operator>>(std::istream & in, Kavichki && str)
 
   return in >> std::quoted(str.str);
 }
-
 
 #endif
