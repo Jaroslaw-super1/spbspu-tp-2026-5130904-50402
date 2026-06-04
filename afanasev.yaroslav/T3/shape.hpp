@@ -140,7 +140,7 @@ bool afanasev::isPermutationOf(const Polygon & a, const Polygon & b)
   return normalize(a) == normalize(b);
 }
 
-std::vector< Point > afanasev::normalize(const Polygon & p)
+std::vector< afanasev::Point > afanasev::normalize(const Polygon & p)
 {
   std::vector< Point > pts = p.points;
   if (pts.empty())
@@ -163,7 +163,7 @@ std::vector< Point > afanasev::normalize(const Polygon & p)
   return pts;
 }
 
-Polygon afanasev::swapCoordinates(const Polygon & p)
+afanasev::Polygon afanasev::swapCoordinates(const Polygon & p)
 {
   Polygon res;
   res.points.reserve(p.points.size());
