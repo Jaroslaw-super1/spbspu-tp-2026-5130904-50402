@@ -67,6 +67,16 @@ namespace
     out << std::fixed << std::setprecision(1)
       << std::accumulate(areas.begin(), areas.end(), 0.0) << "\n";
   }
+
+  bool areaLess(const Polygon & a, const Polygon & b)
+  {
+    return area(a) < area(b);
+  }
+
+  bool vertexLess(const Polygon & a, const Polygon & b)
+  {
+    return a.points.size() < b.points.size();
+  }
 }
 
 
@@ -110,7 +120,24 @@ void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Po
 
 void afanasev::max(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
 {
-  
+  std::string param;
+  if (!(in >> param)) throw std::invalid_argument("invalid");
+  if (polygons.empty()) throw std::invalid_argument("invalid");
+
+  if (param == "AREA")
+  {
+    auto it = std::max_element(polygons.begin(), polygons.end(), areaLess);
+    out << std::fixed << std::setprecision(1) << area(*it) << "\n";
+  }
+  else if (param == "VERTEXES")
+  {
+    auto it = std::max_element(polygons.begin(), polygons.end(), vertexLess);
+    out << it->points.size() << "\n";
+  }
+  else
+  {
+    throw std::invalid_argument("invalid");
+  }
 }
 
 void afanasev::min(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
