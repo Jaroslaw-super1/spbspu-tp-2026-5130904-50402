@@ -93,6 +93,28 @@ namespace afanasev
 
     return in;
   }
+
+  double area(const Polygon & polygon);
+}
+
+double afanasev::area(const Polygon & polygon)
+{
+  const auto & pts = polygon.points;
+  size_t n = pts.size();
+  if (n < 3)
+  {
+    return 0.0;
+  }
+
+  double sum = 0.0;
+  for (size_t i = 0; i < n; ++i)
+  {
+    const Point & p1 = pts[i];
+    const Point & p2 = pts[(i + 1) % n];
+    sum += static_cast< double >(p1.x * p2.y - p2.x * p1.y);
+  }
+
+  return std::abs(sum) / 2.0;
 }
 
 bool afanasev::operator==(const Point & lhs, const Point & rhs)
