@@ -98,6 +98,37 @@ namespace afanasev
   Polygon swapCoordinates(const Polygon & p);
   std::vector< Point > normalize(const Polygon & p);
   bool isPermutationOf(const Polygon & a, const Polygon & b);
+  bool isRectangle(const Polygon & poly);
+}
+
+bool isRectangle(const Polygon & poly)
+{
+  const auto & pts = poly.points;
+  if (pts.size() != 4)
+  {
+    return false;
+  }
+
+  auto dot = [](const Point & p1, const Point & p2, const Point & p3)
+  {
+    int dx1 = p2.x - p1.x;
+    int dy1 = p2.y - p1.y;
+    int dx2 = p3.x - p2.x;
+    int dy2 = p3.y - p2.y;
+    return dx1 * dx2 + dy1 * dy2;
+  };
+
+  for (size_t i = 0; i < 4; ++i)
+  {
+    const Point & a = pts[i];
+    const Point & b = pts[(i + 1) % 4];
+    const Point & c = pts[(i + 2) % 4];
+    if (dot(a, b, c) != 0)
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 bool afanasev::isPermutationOf(const Polygon & a, const Polygon & b)

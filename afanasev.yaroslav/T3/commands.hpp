@@ -112,7 +112,6 @@ namespace
   }
 }
 
-
 void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
 {
   std::string param;
@@ -264,7 +263,14 @@ void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< P
 
 void afanasev::rects(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
 {
+  std::string rest;
+  std::getline(in, rest);
+  if (!std::all_of(rest.begin(), rest.end(), isSpaceChar))
+  {
+    throw std::invalid_argument("invalid");
+  }
 
+  out << std::count_if(polygons.begin(), polygons.end(), isRectangle) << "\n";
 }
 
 #endif
