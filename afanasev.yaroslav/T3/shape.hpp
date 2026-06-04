@@ -29,7 +29,7 @@ namespace afanasev
 
   std::istream & operator>>(std::istream & in, DelimIO && delim)
   {
-    char c;
+    char c = 0;
     in >> c;
     if (c != delim.expected)
     {
