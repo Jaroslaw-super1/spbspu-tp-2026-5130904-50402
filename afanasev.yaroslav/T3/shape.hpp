@@ -94,14 +94,14 @@ namespace afanasev
     return in;
   }
 
-  double area(const Polygon & polygon);
+  double makeArea(const Polygon & polygon);
   Polygon swapCoordinates(const Polygon & p);
   std::vector< Point > normalize(const Polygon & p);
   bool isPermutationOf(const Polygon & a, const Polygon & b);
   bool isRectangle(const Polygon & poly);
 }
 
-bool isRectangle(const Polygon & poly)
+bool afanasev::isRectangle(const Polygon & poly)
 {
   const auto & pts = poly.points;
   if (pts.size() != 4)
@@ -163,7 +163,7 @@ std::vector< Point > afanasev::normalize(const Polygon & p)
   return pts;
 }
 
-Polygon swapCoordinates(const Polygon & p)
+Polygon afanasev::swapCoordinates(const Polygon & p)
 {
   Polygon res;
   res.points.reserve(p.points.size());
@@ -173,7 +173,7 @@ Polygon swapCoordinates(const Polygon & p)
   return res;
 }
 
-double afanasev::area(const Polygon & polygon)
+double afanasev::makeArea(const Polygon & polygon)
 {
   const auto & pts = polygon.points;
   size_t n = pts.size();

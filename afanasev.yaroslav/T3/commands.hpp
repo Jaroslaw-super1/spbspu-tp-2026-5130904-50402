@@ -28,7 +28,7 @@ namespace
 
   double getArea(const Polygon & p)
   {
-    return area(p);
+    return makeArea(p);
   }
 
   bool isEven(const Polygon & p)
@@ -70,7 +70,7 @@ namespace
 
   bool areaLess(const Polygon & a, const Polygon & b)
   {
-    return area(a) < area(b);
+    return makeArea(a) < makeArea(b);
   }
 
   bool vertexLess(const Polygon & a, const Polygon & b)
@@ -165,7 +165,7 @@ void afanasev::max(std::istream & in, std::ostream & out, const std::vector< Pol
   if (param == "AREA")
   {
     auto it = std::max_element(polygons.begin(), polygons.end(), areaLess);
-    out << std::fixed << std::setprecision(1) << area(*it) << "\n";
+    out << std::fixed << std::setprecision(1) << makeArea(*it) << "\n";
   }
   else if (param == "VERTEXES")
   {
@@ -193,7 +193,7 @@ void afanasev::min(std::istream & in, std::ostream & out, const std::vector< Pol
   if (param == "AREA")
   {
     auto it = std::min_element(polygons.begin(), polygons.end(), areaLess);
-    out << std::fixed << std::setprecision(1) << area(*it) << "\n";
+    out << std::fixed << std::setprecision(1) << makeArea(*it) << "\n";
   }
   else if (param == "VERTEXES")
   {
