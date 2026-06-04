@@ -121,8 +121,14 @@ void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Po
 void afanasev::max(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
 {
   std::string param;
-  if (!(in >> param)) throw std::invalid_argument("invalid");
-  if (polygons.empty()) throw std::invalid_argument("invalid");
+  if (!(in >> param))
+  {
+    throw std::invalid_argument("invalid");
+  }
+  if (polygons.empty())
+  {
+    throw std::invalid_argument("invalid");
+  }
 
   if (param == "AREA")
   {
@@ -155,7 +161,7 @@ void afanasev::min(std::istream & in, std::ostream & out, const std::vector< Pol
   if (param == "AREA")
   {
     auto it = std::min_element(polygons.begin(), polygons.end(), areaLess);
-    out << std::fixed << std::setprecision(1) << calculateArea(*it) << "\n";
+    out << std::fixed << std::setprecision(1) << area(*it) << "\n";
   }
   else if (param == "VERTEXES")
   {
@@ -170,7 +176,34 @@ void afanasev::min(std::istream & in, std::ostream & out, const std::vector< Pol
 
 void afanasev::count(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
 {
-  
+  std::string param;
+  if (!(in >> param))
+  {
+    throw std::invalid_argument("invalid");
+  }
+
+  if (param == "EVEN")
+  {
+    out << std::count_if(polygons.begin(), polygons.end(), isEven) << "\n";
+  }
+  else if (param == "ODD")
+  {
+    out << std::count_if(polygons.begin(), polygons.end(), isOdd) << "\n";
+  }
+  else if (isNumber(param))
+  {
+    size_t n = std::stoul(param);
+    if (n < 3)
+    {
+      throw std::invalid_argument("invalid");
+    }
+    out << std::count_if(polygons.begin(), polygons.end(),
+      std::bind(hasVertexCount, std::placeholders::_1, n)) << "\n";
+  }
+  else
+  {
+    throw std::invalid_argument("invalid");
+  }
 }
 
 void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
