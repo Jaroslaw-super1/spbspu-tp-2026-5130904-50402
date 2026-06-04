@@ -95,6 +95,51 @@ namespace afanasev
   }
 
   double area(const Polygon & polygon);
+  Polygon swapCoordinates(const Polygon & p);
+  std::vector< Point > normalize(const Polygon & p);
+  bool isPermutationOf(const Polygon & a, const Polygon & b);
+}
+
+bool afanasev::isPermutationOf(const Polygon & a, const Polygon & b)
+{
+  if (a.points.size() != b.points.size())
+  {
+    return false;
+  }
+  return normalize(a) == normalize(b);
+}
+
+std::vector< Point > afanasev::normalize(const Polygon & p)
+{
+  std::vector< Point > pts = p.points;
+  if (pts.empty())
+  {
+    return pts;
+  }
+
+  int minX = std::min_element(pts.begin(), pts.end(),
+    [](const Point & a, const Point & b) { return a.x < b.x; })->x;
+  int minY = std::min_element(pts.begin(), pts.end(),
+    [](const Point & a, const Point & b) { return a.y < b.y; })->y;
+  for (auto & p : pts)
+  {
+    p.x -= minX; p.y -= minY;
+  }
+  std::sort(pts.begin(), pts.end(),
+    [](const Point & a, const Point & b)
+    {return a.x < b.x || (a.x == b.x && a.y < b.y);});
+
+  return pts;
+}
+
+Polygon swapCoordinates(const Polygon & p)
+{
+  Polygon res;
+  res.points.reserve(p.points.size());
+  std::transform(p.points.begin(), p.points.end(), std::back_inserter(res.points),
+    [](const Point & p)
+    {return Point{p.y, p.x};});
+  return res;
 }
 
 double afanasev::area(const Polygon & polygon)

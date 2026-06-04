@@ -77,6 +77,39 @@ namespace
   {
     return a.points.size() < b.points.size();
   }
+
+  bool readPolygon(std::istream & in, Polygon & p)
+  {
+    size_t n;
+    if (!(in >> n))
+    {
+      return false;
+    }
+    if (n < 3)
+    {
+      return false;
+    }
+
+    std::vector< Point > pts;
+    pts.reserve(n);
+    for (size_t i = 0; i < n; ++i)
+    {
+      char open, comma, close;
+      int x, y;
+      if (!(in >> open >> x >> comma >> y >> close) ||
+          open != '(' || comma != ';' || close != ')')
+        return false;
+      pts.push_back({x, y});
+    }
+
+    p.points = std::move(pts);
+    return true;
+  }
+
+  bool isSpaceChar(char c)
+  {
+    return c == ' ';
+  }
 }
 
 
@@ -208,7 +241,25 @@ void afanasev::count(std::istream & in, std::ostream & out, const std::vector< P
 
 void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
 {
-  
+  Polygon target;
+  if (!readPolygon(in, target))
+  {
+    in.clear();
+    in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    throw std::invalid_argument("invalid");
+  }
+
+  std::string rest;
+  std::getline(in, rest);
+  if (!std::all_of(rest.begin(), rest.end(), isSpaceChar))
+    throw std::invalid_argument("invalid");
+
+  Polygon swapped = swapCoordinates(target);
+  auto isPerm = [&target, &swapped](const Polygon & p) -> bool
+  {
+    return isPermutationOf(p, target) || isPermutationOf(p, swapped);
+  };
+  out << std::count_if(polygons.begin(), polygons.end(), isPerm) << "\n";
 }
 
 void afanasev::rects(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
