@@ -69,7 +69,7 @@ void afanasev::linkCmd(std::istream & in, std::ostream &, note_t & db)
 
   for (const std::pair< std::string, std::weak_ptr< Note > > & ptr : src->ptr)
   {
-    if (ptr.first == link)
+    if (ptr.first == link && !ptr.second.expired())
     {
       throw std::out_of_range("This link already exists");
     }

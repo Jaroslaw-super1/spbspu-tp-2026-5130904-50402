@@ -39,7 +39,7 @@ int main()
     }
     catch (...)
     {
-      std::cout << "<INVALID COMMAND>" << '\n';
+      std::cout << "<INVALID COMMAND>";
       std::cin.clear();
       std::cin.ignore(afanasev::streamMax, '\n');
     }
