@@ -83,30 +83,19 @@ void afanasev::haltCmd(std::istream & in, std::ostream &, note_t & db)
   std::string name, link;
   in >> name >> link;
 
-  auto src = db.at(name);
+  std::shared_ptr< Note > src = db.at(name);
   auto & links = src->ptr;
+
   for (auto it = links.begin(); it != links.end(); ++it)
   {
     if (it->first == link)
     {
-      if (!it->second.expired())
-      {
-        links.erase(it);
-        return;
-      }
-      else
-      {
-        links.erase(it);
-        return;
-      }
+      links.erase(it);
+      return;
     }
   }
   throw std::out_of_range("Link not found");
 }
-
-
-
-
 
 void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
 {
