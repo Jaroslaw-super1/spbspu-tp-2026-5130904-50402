@@ -33,12 +33,16 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
   std::shared_ptr< Note > note = db.at(name);
   const std::vector< std::string > & lines = note->text;
 
-  for (size_t i = 0; i < lines.size(); ++i)
+  if (!lines.empty())
   {
-    out << lines[i];
-    if (i + 1 < lines.size())
+    has_output = true;
+    for (size_t i = 0; i < lines.size(); ++i)
     {
-      out << '\n';
+      out << lines[i];
+      if (i + 1 < lines.size())
+      {
+        out << '\n';
+      }
     }
   }
 }
@@ -115,6 +119,7 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
       }
       first = false;
       out << link.first;
+      has_output = true;
     }
   }
 }
@@ -134,6 +139,7 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
     }
   }
   out << cnt;
+  has_output = true;
 }
 
 void afanasev::refreshCmd(std::istream & in, std::ostream &, note_t & db)

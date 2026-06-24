@@ -9,6 +9,7 @@ namespace afanasev
   using func_t = void (*)(std::istream &, std::ostream &, note_t &);
 
   constexpr std::streamsize streamMax = std::numeric_limits< std::streamsize >::max();
+  bool has_output;
 
   void noteCmd(std::istream & in, std::ostream &, note_t & db);
   void lineCmd(std::istream & in, std::ostream &, note_t & db);

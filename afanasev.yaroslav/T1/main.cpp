@@ -28,8 +28,12 @@ int main()
   {
     try
     {
+      afanasev::has_output = false;
       cmds.at(cmd)(std::cin, std::cout, db);
-      std::cout << '\n';
+      if (afanasev::has_output)
+      {
+        std::cout << '\n';
+      }
     }
     catch (...)
     {
