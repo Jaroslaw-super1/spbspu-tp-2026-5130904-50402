@@ -32,6 +32,10 @@ int main()
     {
       afanasev::has_output = false;
       cmds.at(cmd)(std::cin, std::cout, db);
+      if (afanasev::has_output)
+      {
+        std::cout << '\n';
+      }
     }
     catch (...)
     {
