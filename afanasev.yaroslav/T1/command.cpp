@@ -32,7 +32,7 @@ void afanasev::showCmd(std::istream & in, std::ostream & out, note_t & db)
 
   std::shared_ptr< Note > note = db.at(name);
   const std::vector< std::string > & lines = note->text;
-  afanasev::has_output = true;
+  has_output = true;
   if (!lines.empty())
   {
     for (size_t i = 0; i < lines.size(); ++i)
@@ -84,17 +84,19 @@ void afanasev::haltCmd(std::istream & in, std::ostream &, note_t & db)
   in >> name >> link;
 
   std::shared_ptr< Note > src = db.at(name);
-  auto & links = src->ptr;
+  std::vector< std::pair< std::string, std::weak_ptr< Note > > >::iterator it = src->ptr.begin();
 
-  for (auto it = links.begin(); it != links.end(); ++it)
+  while (it != src->ptr.end() && it->first != link)
   {
-    if (it->first == link)
-    {
-      links.erase(it);
-      return;
-    }
+    ++it;
   }
-  throw std::out_of_range("Link not found");
+
+  if (it == src->ptr.end() || it->second.expired())
+  {
+    throw std::out_of_range("Link not found or expired");
+  }
+
+  src->ptr.erase(it);
 }
 
 void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
@@ -105,6 +107,7 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
   std::shared_ptr< Note > note = db.at(name);
   const std::vector< std::pair< std::string, std::weak_ptr< Note > > > & links = note->ptr;
 
+  has_output = true;
   bool first = true;
   for (const std::pair< std::string, std::weak_ptr< Note > > & link : links)
   {
@@ -116,7 +119,6 @@ void afanasev::mindCmd(std::istream & in, std::ostream & out, note_t & db)
       }
       first = false;
       out << link.first;
-      afanasev::has_output = true;
     }
   }
 }
@@ -136,7 +138,7 @@ void afanasev::expiredCmd(std::istream & in, std::ostream & out, note_t & db)
     }
   }
   out << cnt;
-  afanasev::has_output = true;
+  has_output = true;
 }
 
 void afanasev::refreshCmd(std::istream & in, std::ostream &, note_t & db)
