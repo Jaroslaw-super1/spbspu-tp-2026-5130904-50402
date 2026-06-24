@@ -4,6 +4,8 @@
 #include "command.hpp"
 #include "note.hpp"
 
+bool afanasev::has_output = false;
+
 int main()
 {
   afanasev::note_t db;
