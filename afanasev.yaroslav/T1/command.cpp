@@ -1,6 +1,6 @@
+#include "command.hpp"
 #include <iostream>
 #include <iomanip>
-#include "command.hpp"
 #include "note.hpp"
 
 void afanasev::noteCmd(std::istream & in, std::ostream &, note_t & db)
