@@ -12,8 +12,8 @@ namespace afanasev
   class Note
   {
   public:
-    std::vector< std::string > text_;
-    std::vector< std::pair< std::string, std::weak_ptr< Note > > > ptr_;
+    std::vector< std::string > text;
+    std::vector< std::pair< std::string, std::weak_ptr< Note > > > ptr;
   };
 }
 
