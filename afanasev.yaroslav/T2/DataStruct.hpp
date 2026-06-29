@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <iostream>
+#include <common.hpp>
 
 namespace afanasev
 {
@@ -13,11 +14,6 @@ namespace afanasev
     unsigned long long key1;
     std::pair< long long, unsigned long long > key2;
     std::string key3;
-  };
-
-  struct CharExpect
-  {
-    char exp;
   };
 
   struct StringMatch
@@ -44,7 +40,7 @@ namespace afanasev
   std::ostream & operator<<(std::ostream & out, const DataStruct & str);
   bool operator<(const DataStruct & lhs, const DataStruct & rhs);
 
-  std::istream & operator>>(std::istream & in, CharExpect && str);
+  std::istream & operator>>(std::istream & in, DelimIO && delim);
   std::istream & operator>>(std::istream & in, StringMatch && str);
   std::istream & operator>>(std::istream & in, ULLIn && str);
   std::istream & operator>>(std::istream & in, RacionalNum && str);

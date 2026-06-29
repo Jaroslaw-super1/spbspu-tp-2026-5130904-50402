@@ -4,24 +4,6 @@
 
 namespace afanasev
 {
-  std::istream & operator>>(std::istream & in, CharExpect && str)
-  {
-    std::istream::sentry s(in);
-    if (!s)
-    {
-      return in;
-    }
-
-    char c = 0;
-    in >> c;
-    if (in && c != str.exp)
-    {
-      in.setstate(std::ios::failbit);
-    }
-
-    return in;
-  }
-
   std::istream & operator>>(std::istream & in, StringMatch && str)
   {
     std::istream::sentry s(in);
@@ -90,11 +72,11 @@ namespace afanasev
 
     long long numer = 0;
     unsigned long long denom = 1;
-    in >> CharExpect{'('} >> CharExpect{':'} >> CharExpect{'N'};
+    in >> DelimIO{'('} >> DelimIO{':'} >> DelimIO{'N'};
     in >> std::ws >> numer;
-    in >> CharExpect{':'} >> CharExpect{'D'};
+    in >> DelimIO{':'} >> DelimIO{'D'};
     in >> std::ws >> denom;
-    in >> CharExpect{':'} >> CharExpect{')'};
+    in >> DelimIO{':'} >> DelimIO{')'};
 
     if (in && denom != 0)
     {
@@ -130,10 +112,10 @@ namespace afanasev
     DataStruct tmp{0, {0, 1}, ""};
     bool gotKey1 = false, gotKey2 = false, gotKey3 = false;
 
-    in >> CharExpect{'('};
+    in >> DelimIO{'('};
     while (in && (!gotKey1 || !gotKey2 || !gotKey3))
     {
-      in >> CharExpect{':'};
+      in >> DelimIO{':'};
       if (!in)
       {
         break;
