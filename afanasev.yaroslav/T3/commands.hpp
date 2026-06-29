@@ -10,6 +10,7 @@
 #include <limits>
 #include <numeric>
 #include <cctype>
+#include <unordered_map>
 #include "shape.hpp"
 
 namespace afanasev
@@ -51,7 +52,7 @@ namespace
     areas.reserve(filtered.size());
     std::transform(filtered.begin(), filtered.end(), std::back_inserter(areas), makeArea);
     out << std::fixed << std::setprecision(1)
-      << std::accumulate(areas.begin(), areas.end(), 0.0) << "\n";
+      << std::accumulate(areas.begin(), areas.end(), 0.0);
   }
 
   bool areaLess(const Polygon & a, const Polygon & b)
@@ -105,7 +106,6 @@ void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Po
   {
     throw std::invalid_argument("invalid");
   }
-  out << std::fixed << std::setprecision(1);
 
   if (param == "MEAN")
   {
@@ -117,7 +117,7 @@ void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Po
     std::vector< double > areas(polygons.size());
     std::transform(polygons.begin(), polygons.end(), areas.begin(), makeArea);
     double sum = std::accumulate(areas.begin(), areas.end(), 0.0);
-    out << std::fixed << std::setprecision(1) << sum / polygons.size() << "\n";
+    out << std::fixed << std::setprecision(1) << sum / polygons.size();
   }
 
   else if (param == "EVEN")
@@ -155,12 +155,12 @@ void afanasev::max(std::istream & in, std::ostream & out, const std::vector< Pol
   {
     IOguard guard(out);
     auto it = std::max_element(polygons.begin(), polygons.end(), areaLess);
-    out << std::fixed << std::setprecision(1) << makeArea(*it) << "\n";
+    out << std::fixed << std::setprecision(1) << makeArea(*it);
   }
   else if (param == "VERTEXES")
   {
     auto it = std::max_element(polygons.begin(), polygons.end(), vertexLess);
-    out << it->points.size() << "\n";
+    out << it->points.size();
   }
   else
   {
@@ -184,12 +184,12 @@ void afanasev::min(std::istream & in, std::ostream & out, const std::vector< Pol
   {
     IOguard guard(out);
     auto it = std::min_element(polygons.begin(), polygons.end(), areaLess);
-    out << std::fixed << std::setprecision(1) << makeArea(*it) << "\n";
+    out << std::fixed << std::setprecision(1) << makeArea(*it);
   }
   else if (param == "VERTEXES")
   {
     auto it = std::min_element(polygons.begin(), polygons.end(), vertexLess);
-    out << it->points.size() << "\n";
+    out << it->points.size();
   }
   else
   {
@@ -207,11 +207,11 @@ void afanasev::count(std::istream & in, std::ostream & out, const std::vector< P
 
   if (param == "EVEN")
   {
-    out << std::count_if(polygons.begin(), polygons.end(), isEven) << "\n";
+    out << std::count_if(polygons.begin(), polygons.end(), isEven);
   }
   else if (param == "ODD")
   {
-    out << std::count_if(polygons.begin(), polygons.end(), isOdd) << "\n";
+    out << std::count_if(polygons.begin(), polygons.end(), isOdd);
   }
   else
   {
@@ -221,7 +221,7 @@ void afanasev::count(std::istream & in, std::ostream & out, const std::vector< P
       throw std::invalid_argument("invalid");
     }
     out << std::count_if(polygons.begin(), polygons.end(),
-      std::bind(hasVertexCount, std::placeholders::_1, n)) << "\n";
+      std::bind(hasVertexCount, std::placeholders::_1, n));
   }
 }
 
@@ -230,8 +230,6 @@ void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< P
   Polygon target;
   if (!readPolygon(in, target))
   {
-    in.clear();
-    in.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
     throw std::invalid_argument("invalid");
   }
 
@@ -247,7 +245,7 @@ void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< P
   {
     return isPermutationOf(p, target) || isPermutationOf(p, swapped);
   };
-  out << std::count_if(polygons.begin(), polygons.end(), isPerm) << "\n";
+  out << std::count_if(polygons.begin(), polygons.end(), isPerm);
 }
 
 void afanasev::rects(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
@@ -259,7 +257,7 @@ void afanasev::rects(std::istream & in, std::ostream & out, const std::vector< P
     throw std::invalid_argument("invalid");
   }
 
-  out << std::count_if(polygons.begin(), polygons.end(), isRectangle) << "\n";
+  out << std::count_if(polygons.begin(), polygons.end(), isRectangle);
 }
 
 #endif

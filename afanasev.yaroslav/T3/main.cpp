@@ -10,7 +10,7 @@
 #include "commands.hpp"
 #include "shape.hpp"
 
-int main(int argc, char **argv)
+int main(int argc, char ** argv)
 {
   namespace af = afanasev;
   using iit_t = std::istream_iterator< af::Polygon >;
@@ -57,6 +57,7 @@ int main(int argc, char **argv)
     try
     {
       commands.at(command)();
+      std::cout << "\n";
     }
     catch (const std::exception &)
     {
