@@ -26,11 +26,6 @@ namespace
 {
   using namespace afanasev;
 
-  double getArea(const Polygon & p)
-  {
-    return makeArea(p);
-  }
-
   bool isEven(const Polygon & p)
   {
     return p.points.size() % 2 == 0;
@@ -46,24 +41,15 @@ namespace
     return p.points.size() == n;
   }
 
-  bool isDigitChar(char c)
-  {
-    return std::isdigit(static_cast< unsigned char >(c));
-  }
-
-  bool isNumber(const std::string & s)
-  {
-    return !s.empty() && std::all_of(s.begin(), s.end(), isDigitChar);
-  }
-
   template < class Pred >
   void printFilteredSum(std::ostream & out, const std::vector< Polygon > & polygons, Pred pred)
   {
+    IOguard guard(out);
     std::vector< Polygon > filtered;
     std::copy_if(polygons.begin(), polygons.end(), std::back_inserter(filtered), pred);
     std::vector< double > areas;
     areas.reserve(filtered.size());
-    std::transform(filtered.begin(), filtered.end(), std::back_inserter(areas), getArea);
+    std::transform(filtered.begin(), filtered.end(), std::back_inserter(areas), makeArea);
     out << std::fixed << std::setprecision(1)
       << std::accumulate(areas.begin(), areas.end(), 0.0) << "\n";
   }
@@ -123,11 +109,15 @@ void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Po
 
   if (param == "MEAN")
   {
-    if (polygons.empty()) throw std::invalid_argument("invalid");
+    if (polygons.empty())
+    {
+      throw std::invalid_argument("invalid");
+    }
+    IOguard guard(out);
     std::vector< double > areas(polygons.size());
-    std::transform(polygons.begin(), polygons.end(), areas.begin(), getArea);
+    std::transform(polygons.begin(), polygons.end(), areas.begin(), makeArea);
     double sum = std::accumulate(areas.begin(), areas.end(), 0.0);
-    out << sum / polygons.size() << "\n";
+    out << std::fixed << std::setprecision(1) << sum / polygons.size() << "\n";
   }
 
   else if (param == "EVEN")
@@ -138,15 +128,14 @@ void afanasev::area(std::istream & in, std::ostream & out, const std::vector< Po
   {
     printFilteredSum(out, polygons, isOdd);
   }
-  else if (isNumber(param))
-  {
-    size_t n = std::stoul(param);
-    if (n < 3) throw std::invalid_argument("invalid");
-    printFilteredSum(out, polygons, std::bind(hasVertexCount, std::placeholders::_1, n));
-  }
   else
   {
-    throw std::invalid_argument("invalid");
+    size_t n = std::stoul(param);
+    if (n < 3)
+    {
+      throw std::invalid_argument("invalid");
+    }
+    printFilteredSum(out, polygons, std::bind(hasVertexCount, std::placeholders::_1, n));
   }
 }
 
@@ -164,6 +153,7 @@ void afanasev::max(std::istream & in, std::ostream & out, const std::vector< Pol
 
   if (param == "AREA")
   {
+    IOguard guard(out);
     auto it = std::max_element(polygons.begin(), polygons.end(), areaLess);
     out << std::fixed << std::setprecision(1) << makeArea(*it) << "\n";
   }
@@ -192,6 +182,7 @@ void afanasev::min(std::istream & in, std::ostream & out, const std::vector< Pol
 
   if (param == "AREA")
   {
+    IOguard guard(out);
     auto it = std::min_element(polygons.begin(), polygons.end(), areaLess);
     out << std::fixed << std::setprecision(1) << makeArea(*it) << "\n";
   }
@@ -222,7 +213,7 @@ void afanasev::count(std::istream & in, std::ostream & out, const std::vector< P
   {
     out << std::count_if(polygons.begin(), polygons.end(), isOdd) << "\n";
   }
-  else if (isNumber(param))
+  else
   {
     size_t n = std::stoul(param);
     if (n < 3)
@@ -232,10 +223,6 @@ void afanasev::count(std::istream & in, std::ostream & out, const std::vector< P
     out << std::count_if(polygons.begin(), polygons.end(),
       std::bind(hasVertexCount, std::placeholders::_1, n)) << "\n";
   }
-  else
-  {
-    throw std::invalid_argument("invalid");
-  }
 }
 
 void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< Polygon > & polygons)
@@ -244,14 +231,16 @@ void afanasev::perms(std::istream & in, std::ostream & out, const std::vector< P
   if (!readPolygon(in, target))
   {
     in.clear();
-    in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    in.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
     throw std::invalid_argument("invalid");
   }
 
   std::string rest;
   std::getline(in, rest);
   if (!std::all_of(rest.begin(), rest.end(), isSpaceChar))
+  {
     throw std::invalid_argument("invalid");
+  }
 
   Polygon swapped = swapCoordinates(target);
   auto isPerm = [&target, &swapped](const Polygon & p) -> bool
